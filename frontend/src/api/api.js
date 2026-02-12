@@ -3,6 +3,9 @@ const API = "https://vw244bj9-8000.euw.devtunnels.ms/api";
 export const getProducts = (categorySlug = "") =>
   fetch(`${API}/products/?category=${categorySlug}`).then((res) => res.json());
 
+export const getProductDetail = (id) =>
+  fetch(`${API}/products/${id}/`).then((res) => res.json());
+
 export const getCategories = () =>
   fetch(`${API}/categories/`).then((res) => res.json());
 
