@@ -11,6 +11,8 @@ export default function ProductDetail() {
   const [product, setProduct] = useState(location.state?.product || null);
   const [loading, setLoading] = useState(!product);
 
+  const [isAdded, setIsAdded] = useState(false);
+
   useEffect(() => {
     if (!product) {
       getProductDetail(id)
@@ -24,6 +26,15 @@ export default function ProductDetail() {
         });
     }
   }, [id, product]);
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    setIsAdded(true);
+
+    setTimeout(() => {
+      setIsAdded(false);
+    }, 1500);
+  };
 
   if (loading) return <div className="container">Загрузка...</div>;
   if (!product) return <div className="container">Товар не найден</div>;
@@ -56,12 +67,30 @@ export default function ProductDetail() {
         <div className="detail-info">
           <div className="detail-price-row">
             <span className="detail-price">{product.price} ₽</span>
-            <button
-              className="btn-add-detail"
-              onClick={() => addToCart(product)}
-            >
-              Добавить в корзину
-            </button>
+
+            {/* Динамическая кнопка */}
+            {!isAdded ? (
+              <button className="btn-add-detail" onClick={handleAddToCart}>
+                Добавить в корзину
+              </button>
+            ) : (
+              <button className="btn-add-detail added-flash">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ marginRight: "8px" }}
+                >
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Добавлено
+              </button>
+            )}
           </div>
 
           <div className="detail-description-section">

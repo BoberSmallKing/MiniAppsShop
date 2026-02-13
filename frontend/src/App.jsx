@@ -5,9 +5,11 @@ import {
   useNavigate,
   useLocation,
 } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Catalog from "./pages/Catalog";
 import ProductDetail from "./pages/ProductDetail"; // Создадим ниже
 import Cart from "./pages/Cart";
+import { getCart } from "./api/cart"; // Импортируй функцию получения корзины
 import Orders from "./pages/Orders";
 import "./styles/index.css";
 
@@ -33,6 +35,24 @@ export default function App() {
 function BottomNav() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [cartCount, setCartCount] = useState(0);
+  const [bump, setBump] = useState(false); // Для анимации мигания
+
+  const updateCount = () => {
+    const cart = getCart();
+    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+    setCartCount(count);
+
+    // Включаем анимацию
+    setBump(true);
+    setTimeout(() => setBump(false), 300); // Выключаем через 300мс
+  };
+
+  useEffect(() => {
+    updateCount(); // Считаем при первой загрузке
+    window.addEventListener("cart-updated", updateCount);
+    return () => window.removeEventListener("cart-updated", updateCount);
+  }, []);
 
   if (location.pathname.startsWith("/product/")) return null;
 
@@ -50,6 +70,8 @@ function BottomNav() {
       <TabButton
         active={location.pathname === "/cart"}
         onClick={() => navigate("/cart")}
+        badge={cartCount} // Передаем количество
+        bump={bump} // Передаем флаг анимации
         icon={
           <svg
             viewBox="0 0 24 24"
@@ -82,10 +104,16 @@ function BottomNav() {
   );
 }
 
-function TabButton({ active, icon, onClick }) {
+function TabButton({ active, icon, onClick, badge, bump }) {
   return (
-    <button className={`tab-btn ${active ? "active" : ""}`} onClick={onClick}>
-      <span className="tab-icon">{icon}</span>
+    <button
+      className={`tab-btn ${active ? "active" : ""} ${bump ? "bump" : ""}`}
+      onClick={onClick}
+    >
+      <span className="tab-icon">
+        {icon}
+        {badge > 0 && <span className="badge">{badge}</span>}
+      </span>
     </button>
   );
 }

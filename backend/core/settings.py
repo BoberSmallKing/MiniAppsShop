@@ -7,7 +7,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG')
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*", "vw244bj9-8000.euw.devtunnels.ms"]
 
 DJANGO_APPS = [
     'jazzmin',
@@ -111,9 +111,9 @@ if DEBUG:
     MEDIA_ROOT = BASE_DIR / 'media'
     CORS_ALLOW_ALL_ORIGINS = True
     CSRF_TRUSTED_ORIGINS = ["https://*.devtunnels.ms"]
-else:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     USE_X_FORWARDED_HOST = True
+    USE_X_FORWARDED_PORT = True
 
 
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProducts, getCategories } from "../api/api";
 import CategoryCard from "../components/CategoryCard";
+import ProductCard from "../components/ProductCard";
 import "../styles/index.css";
 
 export default function Catalog() {
@@ -64,21 +65,13 @@ export default function Catalog() {
         ) : (
           <div className="products-grid">
             {products.map((p) => (
-              <div
-                key={p.id}
-                className="product-card"
+              <ProductCard
                 onClick={() =>
                   navigate(`/product/${p.id}`, { state: { product: p } })
                 }
-              >
-                <div className="product-image-container">
-                  <img src={p.image} alt={p.title} />
-                </div>
-                <div className="product-card-body">
-                  <div className="product-title">{p.title}</div>
-                  <div className="product-price">{p.price} ₽</div>
-                </div>
-              </div>
+                key={p.id}
+                product={p}
+              />
             ))}
           </div>
         )}
